@@ -1,0 +1,3 @@
+*.py[cdo]
+*.log
+__pycache__/
