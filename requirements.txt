@@ -3,3 +3,6 @@ mongoengine
 wtforms
 flask-mongoengine
 flask-restful
+arrow
+suds
+gevent
