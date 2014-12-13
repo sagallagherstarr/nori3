@@ -6,3 +6,4 @@ flask-restful
 arrow
 suds
 gevent
+pytest

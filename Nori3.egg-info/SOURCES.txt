@@ -1,0 +1,5 @@
+Nori3.egg-info/PKG-INFO
+Nori3.egg-info/SOURCES.txt
+Nori3.egg-info/dependency_links.txt
+Nori3.egg-info/top_level.txt
+test/test_app.py
