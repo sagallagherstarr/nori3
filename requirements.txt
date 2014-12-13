@@ -7,3 +7,4 @@ arrow
 suds
 gevent
 pytest
+tox
