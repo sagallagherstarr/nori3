@@ -47,22 +47,35 @@ nori3log.debug("App %s launched.", APPNAME)
 
 pf = pprint.PrettyPrinter(indent=2).pformat
 
-
 import views
 
-db = motor.MotorClient().nori3_database
+motor_client = motor.MotorClient()
+production_db = motor_client.nori3_production # production is the "real" database
+test_db = motor_client.nori3_test # test is for app_testing
+sandbox_db = motor_client.nori3_sandbox # sandbox is for trialing data before committing
+# that data to production
+
 settings = {
   "debug": True,
-  "db": db,
+  "motor_client": motor_client,
+  "production_db": production_db,
+  "test_db": test_db,
+  "sandbox_db": sandbox_db,
 }
 
 def main():
   port = 8888
 
-  resource = ModelFactory(db, objects, models, ModelParams)
+  production_resource = ModelFactory(production_db, objects, models, ModelParams)
+  test_resource = ModelFactory(test_db, objects, models, ModelParams)
+  sandbox_resource = ModelFactory(sandbox_db, objects, models, ModelParams)
 
-  routes = rest_routes(objects, resource, route_prefix="/rest") + views.routes
-  application = Application(routes, debug=True)
+  routes = views.routes
+  routes = routes + rest_routes(objects, production_resource, route_prefix="/rest")
+  routes = routes + rest_routes(objects, test_resource, route_prefix="/test_rest")
+  routes = routes + rest_routes(objects, sandbox_resource, route_prefix="/sandbox_rest")
+  
+  application = Application(routes, **settings)
   http_server = tornado.httpserver.HTTPServer(application)
   http_server.listen(port)
   tornado.ioloop.IOLoop.instance().start()    

@@ -2,11 +2,12 @@ from schematics.types import StringType, BooleanType, DateType
 from schematics.types.compound import ListType, ModelType
 from mingus.service.models import BaseModel
 
-from models import TodoList, User
+from models import SUSHIServiceEndpoint
 
 __all__ = [
-  "TodoList",
-  "User",
+  "SUSHIServiceEndpoint",
+#  "TodoList",
+#  "User",
 ]
 
 #class Todolist(BaseModel):

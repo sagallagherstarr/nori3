@@ -2,3 +2,5 @@ tornado
 motor
 addict
 arrow
+suds-jurko
+mingus-rest-framework
