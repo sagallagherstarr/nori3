@@ -8,8 +8,10 @@
 #)
 
 from ServiceEndpoint import SUSHIServiceEndpoint, create_test_SUSHIServiceEndpoint
+from DateDataPoint import DateDataPoint
 
 __all__ = [
+  "DateDataPoint",
   "SUSHIServiceEndpoint",
   "create_test_SUSHIServiceEndpoint",
 #  "TodoList",

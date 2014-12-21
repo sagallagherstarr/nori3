@@ -5,6 +5,14 @@ Created on Fri Nov  7 10:42:06 2014
 
 @author: sgallagherstarr
 """
+APPNAME = "nori3"
+
+import logging
+logging.basicConfig(level=logging.DEBUG,
+  format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+nori3log = logging.getLogger(APPNAME)
+nori3log.setLevel(logging.DEBUG)
+nori3log.debug("App %s launched.", APPNAME)
 
 import os
 import os.path
@@ -22,53 +30,39 @@ import tornado
 from tornado.web import Application
 import tornado.httpserver
 import tornado.ioloop
-#import tornado.options
-#import tornado.web
-#import tornado.httpserver
-#import tornado.ioloop
-#import tornado.options
 import tornado.web
 from tornado.options import define, options
 import motor
 
-from mingus.resources import models, ModelParams
-from mingus.handler import rest_routes
-from mingus.factories import ModelFactory
-from mingus.register import objects
+from restable.resources import models, ModelParams
+from restable.handler import rest_routes
+from restable.factories import ModelFactory
+from restable.register import objects
 
-APPNAME = "nori3"
-
-import logging
-logging.basicConfig(level=logging.DEBUG,
-  format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-nori3log = logging.getLogger(APPNAME)
-nori3log.setLevel(logging.DEBUG)
-nori3log.debug("App %s launched.", APPNAME)
+from addict import Dict
+import views
 
 pf = pprint.PrettyPrinter(indent=2).pformat
 
-import views
-
-motor_client = motor.MotorClient()
-production_db = motor_client.nori3_production # production is the "real" database
-test_db = motor_client.nori3_test # test is for app_testing
-sandbox_db = motor_client.nori3_sandbox # sandbox is for trialing data before committing
+#motor_client = motor.MotorClient()
+#production_db = motor_client.nori3_production # production is the "real" database
+#test_db = motor_client.nori3_test # test is for app_testing
+#sandbox_db = motor_client.nori3_sandbox # sandbox is for trialing data before committing
 # that data to production
 
-settings = {
-  "debug": True,
-  "motor_client": motor_client,
-  "production_db": production_db,
-  "test_db": test_db,
-  "sandbox_db": sandbox_db,
-}
+settings = Dict()
+settings.debug = True
+settings.motor_client = motor.MotorClient()
+settings.production_db = settings.motor_client.nori3_production
+settings.test_db = settings.motor_client.nori3_test
+settings.sandbox_db = settings.motor_client.nori3_sandbox
 
 def main():
   port = 8888
 
-  production_resource = ModelFactory(production_db, objects, models, ModelParams)
-  test_resource = ModelFactory(test_db, objects, models, ModelParams)
-  sandbox_resource = ModelFactory(sandbox_db, objects, models, ModelParams)
+  test_resource = ModelFactory(settings.test_db, objects, models, ModelParams)
+  production_resource = ModelFactory(settings.production_db, objects, models, ModelParams)
+  sandbox_resource = ModelFactory(settings.sandbox_db, objects, models, ModelParams)
 
   routes = views.routes
   routes = routes + rest_routes(objects, production_resource, route_prefix="/rest")

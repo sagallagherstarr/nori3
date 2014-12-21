@@ -16,12 +16,11 @@ from tornado import gen
 
 from schematics.types import StringType, URLType, BooleanType, DateType
 from schematics.types.compound import ListType, ModelType
-from mingus.service.models import BaseModel
+#from mingus.service.models import BaseModel
 
-class SUSHIServiceEndpoint(BaseModel):
-  class Options:
-    namespace = "SUSHIServiceEndpoint"
-  
+from Nori3Base import Nori3BaseModel
+
+class SUSHIServiceEndpoint(Nori3BaseModel):
   VendorName = StringType()
   
   Description = StringType(required=False)
@@ -30,47 +29,28 @@ class SUSHIServiceEndpoint(BaseModel):
   RequestorEmail = StringType(required=False)
   CustomerID = StringType(required=False)
   CustomerName = StringType(required=False)
-  CounterRelease = StringType(required=False)
+  CounterRelease = StringType(required=False, choices=["1", "2","3", "4"])
 #  CounterReportType = StringType(required=False)
   wsdlURL = URLType(required=False)
   ReportsAvailable = ListType(StringType)
   
   VendorRequiresFields = ListType(StringType)
   
-  def to_primitive(self):
-    """By default, mingus models include a null _id field. This interferes
-       with our ability to save new models, so pop out a null _id field. If
-       _id is not null, leave it alone.
-    """
-    retval = super(SUSHIServiceEndpoint, self).to_primitive()
-    
-    if retval["_id"] is None:
-      retval.pop("_id")
-    
-    return retval
-  
-  @gen.coroutine
-  def save(self, db):
-    log.debug("SUSHIServiceEndpoint.save")
-    log.debug("  db is %s", db)
-    
-    log.debug("  self.to_primitive returns %r", json.dumps(self.to_primitive()))
-    yield db[self._options.namespace].save(self.to_primitive())
-  
 @gen.coroutine
 def create_test_SUSHIServiceEndpoint(application):
   log.debug("create_test_SUSHIServiceEndpoint entered.")
   db = application.settings["test_db"] # use only the test database
-  db.drop_collection("SUSHIServiceEndpoint")
   
-#  document = yield db["SUSHIServiceEndpoint"].find_one({"VendorName": "EBSCOhost"})
-#  log.debug("  document is %r", document)
+#  names = yield db.collection_names()
+  
+  dr = yield db.drop_collection("sushiserviceendpoint")
+  
+#  dr2 = yield db.sushiserviceendpoint.drop()
 #  
-#  eb = []
-  
-#  eb = yield SUSHIServiceEndpoint.objects.filter(VendorName="EBSCOhost", database_name="TEST").find_all()
-  
-#  if len(eb) == 0:
+#  d43 = yield db["SUSHIServiceEndpoint".lower()].drop()
+
+#  names = yield db.collection_names()
+
   EBSCO = SUSHIServiceEndpoint({
     "VendorName": "EBSCOhost",
     "Description": "EBSCOhost SUSHI endpoint",
@@ -85,7 +65,7 @@ def create_test_SUSHIServiceEndpoint(application):
     "VendorRequiresFields": ["RequestorID", "CustomerID", "wsdlURL"]
   })
   
-  EBSCO.validate()
-  
   EBSCO.save(db)
+  
+  log.debug("SUSHIServiceEndpoint created. mro contains: %r", SUSHIServiceEndpoint.__mro__)
     

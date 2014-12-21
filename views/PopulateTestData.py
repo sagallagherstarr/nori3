@@ -8,7 +8,7 @@ Created on Tue Dec 16 11:59:39 2014
 from tornado import gen
 from tornado.web import RequestHandler
 
-from models import create_test_SUSHIServiceEndpoint
+from models import create_test_SUSHIServiceEndpoint, SUSHIServiceEndpoint
 
 class PopulateTestDataHandler(RequestHandler):
   @gen.coroutine

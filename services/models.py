@@ -1,21 +1,8 @@
-from schematics.types import StringType, BooleanType, DateType
-from schematics.types.compound import ListType, ModelType
-from mingus.service.models import BaseModel
+# -*- coding: utf-8 -*-
 
-from models import SUSHIServiceEndpoint
+from models import SUSHIServiceEndpoint, DateDataPoint
 
 __all__ = [
   "SUSHIServiceEndpoint",
-#  "TodoList",
-#  "User",
+  "DateDataPoint",
 ]
-
-#class Todolist(BaseModel):
-#  title = StringType(max_length=60, required=True)
-#  tag = StringType(max_length=40)
-#  checked = BooleanType(default=False)
-#  created = DateType()
-#
-#class User(BaseModel):
-#  name = StringType(max_length=40, required=True)
-#  todolist = ListType(ModelType(Todolist))
